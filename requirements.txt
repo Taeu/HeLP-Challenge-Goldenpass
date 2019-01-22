@@ -1,0 +1,1 @@
+openslide-python
