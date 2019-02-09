@@ -55,7 +55,7 @@ from sklearn import metrics
 from keras.preprocessing.image import *
 
 
-from train import find_pathes_from_slide, read_test_data_path, predict_from_model, simple_model, unet
+from train import find_patches_from_slide, read_test_data_path, predict_from_model, simple_model, unet
 
 model = unet(pretrained_weights ='/data/model/u_1.h5')
 
@@ -163,7 +163,7 @@ slide_pred = list()
 for i in range(len(test_image_paths)):
     print(i,'th inference\n')
     image_path = test_image_paths[i]
-    test_samples = find_pathes_from_slide(image_path,'test')
+    test_samples = find_patches_from_slide(image_path,'test')
     test_generator = gen_imgs_test(image_path, 'test', test_samples, BATCH_SIZE)
     test_steps = np.ceil(len(test_samples)/BATCH_SIZE)
 

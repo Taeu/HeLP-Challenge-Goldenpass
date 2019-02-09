@@ -173,8 +173,59 @@ def slide_data_analysis():
     return df
     
 
-a = slide_data_analysis()
-print(a)
-print('\ntissues max, mean, min = ',np.max(a.tissues),np.mean(a.tissues),np.min(a.tissues))
-print('\ntumor mean ',np.mean(a.tumor))
-print('\nnon-tumor mean ',np.mean(a['non-tumor']))
+def read_test_data_path():
+    
+    image_paths = []
+    with open('test.txt','r') as f:
+        for line in f:
+            line = line.rstrip('\n')
+            image_paths.append(line)
+    #print('image_path # : ',len(image_paths))
+    
+    return image_paths
+
+PATCH_SIZE = 256
+BATCH_SIZE = 32
+test_image_paths = read_test_data_path()
+
+start_x = PATCH_SIZE//4
+start_y = PATCH_SIZE//4
+pred_size = PATCH_SIZE//2
+
+slide_id = list()
+slide_pred = list()
+for i in range(len(test_image_paths)):
+    print(i,'th inference\n')
+    image_path = test_image_paths[i]
+    test_samples = find_patches_from_slide(image_path,'test')
+    print(i,'th inference tissue # : ',test_samples.is_tissue)
+    # test_generator = gen_imgs_test(image_path, 'test', test_samples, BATCH_SIZE)
+
+
+    # test_steps = np.ceil(len(test_samples)/BATCH_SIZE)
+
+
+    # preds = []
+    # for i in tqdm(range(int(test_steps))):
+    #     X, Y = next(test_generator)
+    #     for j in range(len(X)):
+    #         prediction = predict_from_model(X[j],model)
+    #         pred_X = np.zeros((pred_size,pred_size))
+    #         for x in range(start_x,start_x+pred_size):
+    #             for y in range(start_y, start_y+pred_size):
+    #                 pred_X[x-start_x][y-start_y] = prediction[x][y]
+    #         pred_s = pd.Series(pred_X.flatten())
+    #         pred_x_i = np.max(pred_s)
+    #         preds.append(pred_x_i)
+    # max_pred_x = np.max(preds)
+    
+    # slide_id.append(test_image_paths[i][11:19])
+    # slide_pred.append(max_pred_x)
+
+
+
+# a = slide_data_analysis()
+# print(a)
+# print('\ntissues max, mean, min = ',np.max(a.tissues),np.mean(a.tissues),np.min(a.tissues))
+# print('\ntumor mean ',np.mean(a.tumor))
+# print('\nnon-tumor mean ',np.mean(a['non-tumor']))
