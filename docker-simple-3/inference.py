@@ -58,10 +58,12 @@ from keras.preprocessing.image import *
 from train import find_patches_from_slide, read_test_data_path, predict_from_model, simple_model, unet
 
 #model = simple_model(pretrained_weights ='/data/model/u_1.h5')
-model = simple_model(pretrained_weights = 's_1.h5')
+model = simple_model(pretrained_weights ='/data/model/u_1.h5')
 
 PATCH_SIZE = 256
 NUM_CLASSES = 2 # not_tumor, tumor
+
+file_handles=[]
 
 def gen_imgs_test(slide_path, truth_path, samples, batch_size, patch_size = PATCH_SIZE,num_epoch = 1, shuffle=True):
     """This function returns a generator that 
@@ -91,6 +93,7 @@ def gen_imgs_test(slide_path, truth_path, samples, batch_size, patch_size = PATC
     start_y = start_y / patch_size
 
         #img = tiles.get_tile(tiles.level_count-1, (x,y))
+    file_handles.append(slide)
     
     
     if slide_contains_tumor:
@@ -163,8 +166,8 @@ for i in range(len(test_image_paths)):
     image_path = test_image_paths[i]
     test_samples = find_patches_from_slide(image_path,'test')
     NUM_SAMPLES = len(test_samples)
-    if NUM_SAMPLES > 1000:
-        NUM_SAMPLES = 1000
+    if NUM_SAMPLES > 2000:
+        NUM_SAMPLES = 2000
 
     samples = test_samples.sample(NUM_SAMPLES, random_state=42)
     samples.reset_index(drop=True, inplace=True)
@@ -185,10 +188,15 @@ for i in range(len(test_image_paths)):
             pred_s = pd.Series(pred_X.flatten())
             pred_x_i = np.max(pred_s)
             preds.append(pred_x_i)
+        
     max_pred_x = np.max(preds)
     
     slide_id.append(test_image_paths[i][11:19])
     slide_pred.append(max_pred_x)
+    for fh in file_handles:
+        fh.close()
+    file_handles = []
+
 # csv file 만들기
 # list로 만든다음에 넣기 
 # okay==

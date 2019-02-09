@@ -160,6 +160,8 @@ def find_patches_from_slide(slide_path, truth_path, patch_size=PATCH_SIZE,filter
     return all_tissue_samples1
 
 NUM_CLASSES = 2 # not_tumor, tumor
+file_handles=[]
+
 def gen_imgs(all_image_path, all_mask_path, samples, batch_size, patch_size = PATCH_SIZE, shuffle=True):
    
     num_samples = len(samples)
@@ -170,26 +172,22 @@ def gen_imgs(all_image_path, all_mask_path, samples, batch_size, patch_size = PA
     slide_path1 = all_image_path[1]
     slide_path2 = all_image_path[2]
     slide_path3 = all_image_path[3]
-    print('slide_path0 : ',slide_path0)
-    print('slide_path1 : ',slide_path1)
-    print('slide_path2 : ',slide_path2)
-    print('slide_path3 : ',slide_path3)
-    
+
     # slide 0~3 까지 미리 열어두기
     slide0 = openslide.open_slide(slide_path0)
     slide1 = openslide.open_slide(slide_path1)
     slide2 = openslide.open_slide(slide_path2)
     slide3 = openslide.open_slide(slide_path3)
-    
+    file_handles.append(slide0)
+    file_handles.append(slide1)
+    file_handles.append(slide2)
+    file_handles.append(slide3)
     # with openslide.open_slide(slide_path) as slide
     tiles0 = DeepZoomGenerator(slide0,tile_size=patch_size, overlap=0, limit_bounds=False) 
     tiles1 = DeepZoomGenerator(slide1,tile_size=patch_size, overlap=0, limit_bounds=False)
     tiles2 = DeepZoomGenerator(slide2,tile_size=patch_size, overlap=0, limit_bounds=False)
     tiles3 = DeepZoomGenerator(slide3,tile_size=patch_size, overlap=0, limit_bounds=False)
-    print(tiles0)
-    print(tiles1)
-    print(tiles2)
-    print(tiles3)
+    
 
     if 'pos' in slide_path0:
         start_x0 = int(slide0.properties.get('openslide.bounds-x',0))
@@ -258,7 +256,6 @@ def gen_imgs(all_image_path, all_mask_path, samples, batch_size, patch_size = PA
                 # 여기서 하나씩 4개 체크해서 해당되는 부분으로 가야지. for 4번 돌리면서 가야한다.
                 mask_size_up = np.zeros((patch_size,patch_size))
                 a,b=mask_size_up.shape
-                print(batch_sample.slide_path)
                 if batch_sample.slide_path == slide_path0:
                     x, y = batch_sample.tile_loc[::-1]
                     x += start_x0
@@ -474,8 +471,8 @@ for i in range(len(slide_4_list_1)):
         
     # train sample size
     NUM_SAMPLES = len(four_samples)
-    if NUM_SAMPLES > 20000:
-        NUM_SAMPLES = 20000
+    if NUM_SAMPLES > 1000:
+        NUM_SAMPLES = 1000
     
     samples = four_samples.sample(NUM_SAMPLES, random_state=42)
     samples.reset_index(drop=True, inplace=True)
@@ -484,7 +481,7 @@ for i in range(len(slide_4_list_1)):
     for train_index, test_index in split.split(samples, samples["is_tumor"]):
             train_samples = samples.loc[train_index]
             validation_samples = samples.loc[test_index]
-
+    
     train_generator = gen_imgs(four_image_path,four_mask_path,train_samples, BATCH_SIZE)
     validation_generator = gen_imgs(four_image_path,four_mask_path,validation_samples, BATCH_SIZE)
     
@@ -498,6 +495,9 @@ for i in range(len(slide_4_list_1)):
     print("Model training time: %.1f minutes" % ((train_end_time - train_start_time).seconds / 60,))
     # split
     # data gen : all_image_path, all_mask_path
+    for fh in file_handles:
+        fh.close()
+    file_handles = []
 
 
 path = '/data/model'
