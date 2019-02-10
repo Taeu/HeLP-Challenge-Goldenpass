@@ -197,6 +197,7 @@ def gen_imgs(all_image_path, all_mask_path, samples, batch_size, patch_size = PA
         
         truth0 = openslide.open_slide(all_mask_path[0])
         truth_tiles0 = DeepZoomGenerator(truth0, tile_size=16, overlap=0, limit_bounds=False) 
+        file_handles.append(truth0)
         
     else : 
         start_x0 = 0
@@ -208,8 +209,10 @@ def gen_imgs(all_image_path, all_mask_path, samples, batch_size, patch_size = PA
         start_x1 = start_x1 / patch_size
         start_y1 = start_y1 / patch_size
         
+        
         truth1 = openslide.open_slide(all_mask_path[1])
         truth_tiles1 = DeepZoomGenerator(truth1, tile_size=16, overlap=0, limit_bounds=False) 
+        file_handles.append(truth1)
         
     else : 
         start_x1 = 0
@@ -223,6 +226,7 @@ def gen_imgs(all_image_path, all_mask_path, samples, batch_size, patch_size = PA
         
         truth2 = openslide.open_slide(all_mask_path[2])
         truth_tiles2 = DeepZoomGenerator(truth2, tile_size=16, overlap=0, limit_bounds=False) 
+        file_handles.append(truth2)
         
     else : 
         start_x2 = 0
@@ -236,14 +240,14 @@ def gen_imgs(all_image_path, all_mask_path, samples, batch_size, patch_size = PA
         
         truth3 = openslide.open_slide(all_mask_path[3])
         truth_tiles3 = DeepZoomGenerator(truth3, tile_size=16, overlap=0, limit_bounds=False) 
-        
+        file_handles.append(truth3)
     else : 
         start_x3 = 0
         start_y3 = 0
     
 
     
-    while 1: # Loop forever so the generator never terminates
+    for epoc in range(5): # Loop forever so the generator never terminates
         if shuffle:
             samples = samples.sample(frac=1) # shuffle samples
 
@@ -435,9 +439,7 @@ def read_test_data_path():
 
 image_paths, tumor_mask_paths = read_data_path()
 
-slide_4_list_1 = [[102,104,29,44],[144,55,30,18],[54,65,21,36],[139,82,1,49],[73,108,7,23],[107,117,24,52],[106,103,27,13]
-               ,[105,151,15,2],[75,100,41,9],[156,113,32,37],[150,88,39,10],[84,122,5,50],[93,118,53,47],[87,78,45,34],[116,98,48,46],
-                [72,131,22,42],[125,56,40,40]]
+slide_4_list_1 = [[102,104,29,44],[144,55,30,18],[54,65,21,36],[139,82,1,49],[105,151,15,2],[75,100,41,9],[156,113,32,37]]
 slide_4_list_2 = [[109,58,14,28],[101,69,11,43],[94,74,3,20],[64,140,17,16],[92,154,8,26],[99,60,0,33],[86,146,25,19],[68,112,38,51],
                  [71,136,31,4],[59,91,12,6]]
 slide_4_list_3 = [[143,132,124,85],[95,120,81,77],[97,96,110,83],[152,128,149,155],[153,111,57,138],[134,135,114,76],
@@ -471,8 +473,8 @@ for i in range(len(slide_4_list_1)):
         
     # train sample size
     NUM_SAMPLES = len(four_samples)
-    if NUM_SAMPLES > 1000:
-        NUM_SAMPLES = 1000
+    if NUM_SAMPLES > 5000:
+        NUM_SAMPLES = 5000
     
     samples = four_samples.sample(NUM_SAMPLES, random_state=42)
     samples.reset_index(drop=True, inplace=True)

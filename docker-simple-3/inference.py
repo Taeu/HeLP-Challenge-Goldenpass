@@ -55,8 +55,9 @@ from sklearn import metrics
 from keras.preprocessing.image import *
 
 
-from train import find_patches_from_slide, read_test_data_path, predict_from_model, simple_model, unet
+from train import find_patches_from_slide, read_test_data_path, predict_from_model, simple_model
 
+print('****************************INFERENCE FILE*******************************')
 #model = simple_model(pretrained_weights ='/data/model/u_1.h5')
 model = simple_model(pretrained_weights ='/data/model/u_1.h5')
 
@@ -87,12 +88,15 @@ def gen_imgs_test(slide_path, truth_path, samples, batch_size, patch_size = PATC
     #with openslide.open_slide(slide_path) as slide:
     tiles = DeepZoomGenerator(slide,tile_size=patch_size, overlap=0, limit_bounds=False) # 이거 limit_bounds =True하면 저거 굳이 안가져와도 될텐데
     
-    start_x = int(slide.properties.get('openslide.bounds-x',0))
-    start_y = int(slide.properties.get('openslide.bounds-y',0))
-    start_x = start_x / patch_size
-    start_y = start_y / patch_size
+    # start_x = int(slide.properties.get('openslide.bounds-x',0))
+    # start_y = int(slide.properties.get('openslide.bounds-y',0))
+    # start_x = start_x / patch_size
+    # start_y = start_y / patch_size
+    start_x = 0
+    start_y = 0
 
-        #img = tiles.get_tile(tiles.level_count-1, (x,y))
+        #img = tiles.get_tile(tiles.l
+        # level_count-1, (x,y))
     file_handles.append(slide)
     
     
@@ -103,10 +107,10 @@ def gen_imgs_test(slide_path, truth_path, samples, batch_size, patch_size = PATC
             
     
     
-    while 1: # Loop forever so the generator never terminates
+    for epo in range(1): # Loop forever so the generator never terminates
         if shuffle:
             samples = samples.sample(frac=1) # shuffle samples
-
+        print('inferencing...')
         for offset in range(0, num_samples, batch_size):
             batch_samples = samples.iloc[offset:offset+batch_size]
             images = []
@@ -161,13 +165,11 @@ pred_size = PATCH_SIZE//2
 
 slide_id = list()
 slide_pred = list()
-for i in range(len(test_image_paths)):
-    print(i,'th inference\n')
-    image_path = test_image_paths[i]
+for id_test in range(len(test_image_paths)):
+    print(id_test,'th inference\n')
+    image_path = test_image_paths[id_test]
     test_samples = find_patches_from_slide(image_path,'test')
     NUM_SAMPLES = len(test_samples)
-    if NUM_SAMPLES > 2000:
-        NUM_SAMPLES = 2000
 
     samples = test_samples.sample(NUM_SAMPLES, random_state=42)
     samples.reset_index(drop=True, inplace=True)
@@ -191,7 +193,7 @@ for i in range(len(test_image_paths)):
         
     max_pred_x = np.max(preds)
     
-    slide_id.append(test_image_paths[i][11:19])
+    slide_id.append(test_image_paths[id_test][11:19])
     slide_pred.append(max_pred_x)
     for fh in file_handles:
         fh.close()
