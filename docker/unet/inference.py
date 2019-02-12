@@ -25,8 +25,6 @@ def ignore_warn(*args, **kwargs):
 warnings.warn = ignore_warn #ignore annoying warning (from sklearn and seaborn)
 
 
-model = models.load_model('/data/model/unet.h5')
-
 file_handles = []
 def test_generator(samples,
                    slide_path,
@@ -79,6 +77,8 @@ patch_size = 256
 batch_size = 32
 
 # test_paths = {'Slide003': '../../data/test/Slide003.mrxs'}
+print('======== Load model ========')
+model = models.load_model('/data/model/unet.h5')
 
 print('======== Start Inference ========')
 slide_ids, slide_preds = [], []

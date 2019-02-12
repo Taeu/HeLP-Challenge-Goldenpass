@@ -23,6 +23,7 @@ def ignore_warn(*args, **kwargs):
 
 warnings.warn = ignore_warn #ignore annoying warning (from sklearn and seaborn)
 
+print('**************************** run train.py ***************************************')
 
 file_handles = []
 def generator(samples,
@@ -325,3 +326,4 @@ for slides in slide_4_list_1:
     file_handles = []
 
 model.save('/data/model/unet.h5')
+print('********************** Train finished **********************')
