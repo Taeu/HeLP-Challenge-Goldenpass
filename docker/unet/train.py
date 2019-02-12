@@ -286,7 +286,7 @@ columns = ['is_tissue','slide_path','is_tumor','is_all_tumor','tile_loc']
 batch_size = 32
 n_epochs = 30
 print('======== Start Train ========')
-for slides in slide_4_test:
+for slides in slide_4_list_1:
     sample_group_df = pd.DataFrame(
             columns=['is_tissue','slide_path','is_tumor','is_all_tumor','tile_loc'])
     
