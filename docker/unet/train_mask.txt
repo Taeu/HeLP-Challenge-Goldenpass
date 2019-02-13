@@ -72,7 +72,6 @@
 /data/train/mask/positive/Slide029.png
 /data/train/mask/positive/Slide033.png
 /data/train/mask/positive/Slide034.png
-/data/train/mask/positive/Slide035.png
 /data/train/mask/positive/Slide036.png
 /data/train/mask/positive/Slide037.png
 /data/train/mask/positive/Slide038.png
