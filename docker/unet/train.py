@@ -237,7 +237,7 @@ def create_model(patch_size=256, pre_trained_path=False):
     return model
 
 
-model = create_model(pre_trained_path='unet.h5')
+model = create_model()
 
 
 def get_data_path():
