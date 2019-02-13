@@ -17,13 +17,6 @@ from tensorflow.keras.utils import to_categorical
 from openslide.deepzoom import DeepZoomGenerator
 from common import find_patches_from_slide
 
-import warnings
-
-def ignore_warn(*args, **kwargs):
-    pass
-
-warnings.warn = ignore_warn #ignore annoying warning (from sklearn and seaborn)
-
 
 file_handles = []
 def test_generator(samples,

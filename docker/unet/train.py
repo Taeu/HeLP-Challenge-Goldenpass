@@ -16,12 +16,6 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.utils import to_categorical
 from openslide.deepzoom import DeepZoomGenerator
 from common import find_patches_from_slide
-import warnings
-
-def ignore_warn(*args, **kwargs):
-    pass
-
-warnings.warn = ignore_warn #ignore annoying warning (from sklearn and seaborn)
 
 print('**************************** run train.py ***************************************')
 
@@ -255,7 +249,7 @@ def create_model(patch_size=256, pre_trained_path=False):
     return model
 
 
-model = create_model(pre_trained_path='./unet.h5')
+model = create_model(pre_trained_path='unet.h5')
 
 
 def get_data_path():

@@ -6,4 +6,3 @@ scikit-learn
 scikit-image
 opencv-python
 openslide-python
-tensorflow-gpu
