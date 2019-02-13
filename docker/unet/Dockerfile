@@ -1,15 +1,21 @@
-FROM tensorflow/tensorflow:1.12.0-devel-gpu-py3
+ # Use an official Python runtime as a parent image
+FROM ubuntu:16.04
 
+# Set the working directory to /app
 WORKDIR /
 
+# Copy the current directory contents into the container at /app
 COPY . .
 
-RUN cd /usr/local/cuda/lib64 \ 
-    && mv stubs/libcuda.so ./ \ 
-    && ln -s libcuda.so libcuda.so.1 \ 
-    && ldconfig
+# Update
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository ppa:jonathonf/python-3.6
 
 RUN apt-get update
+
+
+RUN apt-get install -y build-essential python3.6 python3.6-dev python3-pip python3.6-venv
 RUN apt-get install -y autoconf \
 											automake \
 											cmake \
@@ -26,7 +32,6 @@ RUN apt-get install -y autoconf \
 											python-pip \
 											sqlite3 \
 											wget
-
 RUN git clone https://github.com/uclouvain/openjpeg.git 
 RUN cd openjpeg && mkdir build && cd build && cmake ../ -DCMAKE_BUILD_TYPE=Release && make && make install && make clean 
 
@@ -37,6 +42,10 @@ RUN wget https://github.com/openslide/openslide/releases/download/v3.4.1/opensli
 RUN tar xvzf openslide-3.4.1.tar.gz 
 RUN cd openslide-3.4.1 && ./configure && make && make install && cd /
 
-RUN pip install --upgrade pip
-RUN pip install -r ./requirements.txt
+
+
+RUN python3.6 -m pip install pip --upgrade
+
+# Install any needed packages specified in requirements.txt
+RUN python3.6 -m pip install -r ./requirements.txt
 ENV LD_LIBRARY_PATH /usr/local/lib
