@@ -26,19 +26,7 @@ def generator(samples,
               batch_size,
               patch_size=256,
               shuffle=True):
-    '''The generator for DataSet
-        Args:
-            - samples: DataFrame of samples
-            - slide_paths: paths of all slides 
-            - truth_paths: paths of all truth(masks)
-            - batch_size: mini-batch size
-            - patch_size: patch size for samples
-            - shuffle: bool, if True shuffle samples
-        Returns(yield):
-            - train_x: train dataset → [batch_size, patch_size, patch_size, 3]
-            - train_y: train labelset → [batch_size, patch_size, patch_size, 2]'''
     
-    # 4개씩 묶은 slide path
     slide0 = openslide.open_slide(slide_paths[0])
     slide1 = openslide.open_slide(slide_paths[1])
     slide2 = openslide.open_slide(slide_paths[2])
