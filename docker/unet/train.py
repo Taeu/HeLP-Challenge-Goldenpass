@@ -181,7 +181,7 @@ slide_4_test = [[55,55, 0, 0]]
 columns = ['is_tissue','slide_path','is_tumor','is_all_tumor','tile_loc']
 
 batch_size = 32
-n_epochs = 30
+n_epochs = 12
 print('======== Start Train ========')
 for slides in slide_4_list_1:
     sample_group_df = pd.DataFrame(
