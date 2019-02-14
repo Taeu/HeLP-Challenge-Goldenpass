@@ -7,15 +7,15 @@ import pandas as pd
 import tensorflow as tf
 
 from PIL import Image
-from skimage.filters import threshold_otsu
 from sklearn.model_selection import StratifiedShuffleSplit
-from tensorflow.keras import layers, models
-from tensorflow.keras import backend as K
-from tensorflow.keras import optimizers
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.utils import to_categorical
+from keras import layers, models
+from keras import backend as K
+from keras import optimizers
+from keras.preprocessing.image import ImageDataGenerator
+from keras.utils import to_categorical
 from openslide.deepzoom import DeepZoomGenerator
 from common import find_patches_from_slide
+from model import create_model
 
 
 file_handles = []
@@ -71,7 +71,7 @@ batch_size = 32
 
 # test_paths = {'Slide003': '../../data/test/Slide003.mrxs'}
 print('======== Load model ========')
-model = models.load_model('/data/model/unet.h5')
+model = create_model(pretrained_weights='./unet-v2.h5')
 
 print('======== Start Inference ========')
 slide_ids, slide_preds = [], []
@@ -80,7 +80,7 @@ for slide_id, slide_path in test_paths.items():
     
     num_samples = len(samples)
     
-    samples = samples.sample(1000, random_state=42)
+    samples = samples.sample(num_samples, random_state=42)
     samples.reset_index(drop=True, inplace=True)
     
     test_gen = test_generator(samples, slide_path, batch_size)
@@ -89,6 +89,7 @@ for slide_id, slide_path in test_paths.items():
     predicts = model.predict_generator(test_gen,
                                        steps=test_steps)
     predict = np.max(predicts[:, :, :, 1])
+    print('{},{}'.format(slide_id, predict))
     slide_ids.append(slide_id)
     slide_preds.append(predict)
     
