@@ -1,5 +1,6 @@
 import os
 import csv
+import time
 import cv2
 import openslide
 import numpy as np
@@ -151,7 +152,9 @@ def generator(samples,
 
 
 # model = create_model()
-model = create_model(pretrained_weights='./unet-v2.h5')
+print('============ Load model for Training ==============')
+model = create_model(pretrained_weights='./model/unet-v2.h5')
+print('============ Model Loaded for Training ==============')
 
 
 def get_data_path():
@@ -177,6 +180,7 @@ slide_4_list_2 = [[109,58,14,28],[101,69,11,43],[94,74,3,20],[64,140,17,16],[92,
 slide_4_list_3 = [[143,132,124,85],[95,120,81,77],[97,96,110,83],[152,128,149,155],[153,111,57,138],[134,135,114,76],
                   [123,90,121,61],[147,148,119,142],[66,137,63,80],[70,79,115,133],[129,141,127,145]]
 slide_4_test = [[55,55, 0, 0]]
+# slide_4_docker_test = [[102,104,29,44]]
 
 columns = ['is_tissue','slide_path','is_tumor','is_all_tumor','tile_loc']
 
@@ -196,13 +200,13 @@ for slides in slide_4_list_1:
         group_mask_path.append(truth_path)
         
     num_samples = len(sample_group_df)
-    if num_samples > 10000:
-        num_samples = 10000
+    if num_samples > 15000:
+        num_samples = 15000
     
     samples = sample_group_df.sample(num_samples, random_state=42)
     samples.reset_index(drop=True, inplace=True)
     
-    split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+    split = StratifiedShuffleSplit(n_splits=1, test_size=0.15, random_state=42)
     for train_index, test_index in split.split(samples, samples["is_tumor"]):
             train_samples = samples.loc[train_index]
             validation_samples = samples.loc[test_index]
@@ -221,5 +225,95 @@ for slides in slide_4_list_1:
         fh.close()
     file_handles = []
 
-model.save('/data/model/unet.h5')
 print('********************** Train finished **********************')
+
+print('********************** Start Inference *********************')
+file_handles = []
+def test_generator(samples,
+                   slide_path,
+                   batch_size,
+                   patch_size=256,
+                   shuffle=True):
+    
+    slide = openslide.open_slide(slide_path)
+    file_handles.append(slide)
+
+    # tiles
+    tiles = DeepZoomGenerator(slide, tile_size=patch_size, overlap=0, limit_bounds=False)
+
+    num_samples = len(samples)
+    while 1:
+        if shuffle:
+            samples = samples.sample(frac=1)  # shuffling
+
+        for offset in range(0, num_samples, batch_size):
+            batch_samples = samples.iloc[offset:offset+batch_size]
+
+            batch_tiles= []
+            for slide_path, (y, x) in zip(batch_samples['slide_path'].values, 
+                                          batch_samples['tile_loc'].values):
+                img = tiles.get_tile(tiles.level_count-1, (x, y))             
+                
+                if img.size != (patch_size, patch_size):
+                    img = Image.new('RGB', (patch_size, patch_size))
+                    
+                batch_tiles.append(np.array(img))
+                
+            # train_x
+            test_x = np.array(batch_tiles)
+            yield test_x
+
+def get_test_path():
+    slide_paths = {}
+    with open('./test.txt', 'r') as f:
+        for line in f:
+            path = line.rstrip('\n')
+            _, fname = os.path.split(path)
+            fname = fname.split('.')[0]
+            slide_paths[fname] = path
+                
+    return slide_paths
+
+test_paths = get_test_path()
+
+patch_size = 256
+batch_size = 32
+
+# for docker test
+# test_paths = {'Slide158': '/data/test/Slide158.mrxs'}
+
+print('======== Start Inference ========')
+slide_ids, slide_preds = [], []
+for slide_id, slide_path in test_paths.items():
+    samples = find_patches_from_slide(slide_path, 'test')
+    
+    num_samples = len(samples)
+    if num_samples > 5000:
+        num_samples = 5000
+    
+    samples = samples.sample(num_samples, random_state=42)
+    samples.reset_index(drop=True, inplace=True)
+    
+    test_gen = test_generator(samples, slide_path, batch_size)
+    test_steps = np.ceil(len(samples) / batch_size)
+    
+    predicts = model.predict_generator(test_gen,
+                                       steps=test_steps)
+    predict = np.max(predicts[:, :, :, 1])
+    print('{},{}'.format(slide_id, predict))
+    slide_ids.append(slide_id)
+    slide_preds.append(predict)
+    
+    for fh in file_handles:
+        fh.close()
+    file_handles = []
+
+print('======== Finish Inference ========')
+
+
+print('******************** Create output.csv ************************')
+# Create output.csv
+output = pd.DataFrame()
+output['slide_id'] = slide_ids
+output['slide_pred'] = slide_preds
+output.to_csv('/data/output/output.csv', index=False, header=False)
