@@ -1,5 +1,6 @@
 import os
 import csv
+import time
 import cv2
 import openslide
 import numpy as np
@@ -7,7 +8,6 @@ import pandas as pd
 import tensorflow as tf
 
 from PIL import Image
-from skimage.filters import threshold_otsu
 from sklearn.model_selection import StratifiedShuffleSplit
 from tensorflow.keras import layers, models
 from tensorflow.keras import backend as K
@@ -15,6 +15,7 @@ from tensorflow.keras import optimizers
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.utils import to_categorical
 from openslide.deepzoom import DeepZoomGenerator
+from model import create_model
 from common import find_patches_from_slide
 
 print('**************************** run train.py ***************************************')
@@ -150,94 +151,10 @@ def generator(samples,
             yield train_x, train_y
 
 
-def create_model(patch_size=256, pre_trained_path=False):
-    # Build U-Net model
-    inputs = layers.Input(shape=(patch_size, patch_size, 3), dtype='float32', name='inputs')
-    inputs_norm = layers.Lambda(lambda x: x/255. - .5)(inputs)
-
-    # Conv layers
-    conv1 = layers.Conv2D(16, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(inputs_norm)
-    conv1 = layers.Dropout(0.1)(conv1)
-    conv1 = layers.Conv2D(16, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(conv1)
-    pool1 = layers.MaxPooling2D()(conv1)
-
-    conv2 = layers.Conv2D(32, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(pool1)
-    conv2 = layers.Dropout(0.1)(conv2)
-    conv2 = layers.Conv2D(32, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(conv2)
-    pool2 = layers.MaxPooling2D()(conv2)
-
-    conv3 = layers.Conv2D(64, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(pool2)
-    conv3 = layers.Dropout(0.2)(conv3)
-    conv3 = layers.Conv2D(64, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(conv3)
-    pool3 = layers.MaxPooling2D()(conv3)
-
-    conv4 = layers.Conv2D(128, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(pool3)
-    conv4 = layers.Dropout(0.2)(conv4)
-    conv4 = layers.Conv2D(128, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(conv4)
-    pool4 = layers.MaxPooling2D()(conv4)
-
-    conv5 = layers.Conv2D(256, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(pool4)
-    conv5 = layers.Dropout(0.3)(conv5)
-    conv5 = layers.Conv2D(256, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(conv5)
-
-    # Up-Conv layers
-    up_conv6 = layers.Conv2DTranspose(128, 2, strides=2, padding='same')(conv5)
-    up_conv6 = layers.concatenate([up_conv6, conv4])
-    conv6 = layers.Conv2D(128, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(up_conv6)
-    conv6 = layers.Dropout(0.2)(conv6)
-    conv6 = layers.Conv2D(128, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(conv6)
-
-    up_conv7 = layers.Conv2DTranspose(64, 2, strides=2, padding='same')(conv6)
-    up_conv7 = layers.concatenate([up_conv7, conv3])
-    conv7 = layers.Conv2D(64, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(up_conv7)
-    conv7 = layers.Dropout(0.2)(conv7)
-    conv7 = layers.Conv2D(64, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(conv7)
-
-    up_conv8 = layers.Conv2DTranspose(32, 2, strides=2, padding='same')(conv7)
-    up_conv8 = layers.concatenate([up_conv8, conv2])
-    conv8 = layers.Conv2D(32, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(up_conv8)
-    conv8 = layers.Dropout(0.1)(conv8)
-    conv8 = layers.Conv2D(32, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(conv8)
-
-    up_conv9 = layers.Conv2DTranspose(16, 2, strides=2, padding='same')(conv8)
-    up_conv9 = layers.concatenate([up_conv9, conv1])
-    conv9 = layers.Conv2D(16, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(up_conv9)
-    conv9 = layers.Dropout(0.1)(conv9)
-    conv9 = layers.Conv2D(16, 3, padding='same', 
-                          activation='relu', kernel_initializer='he_normal')(conv9)
-
-    outputs = layers.Conv2D(2, 1, activation='softmax', 
-                           kernel_initializer='he_normal')(conv9)
-
-    model = models.Model(inputs, outputs)
-    model.compile(optimizer=optimizers.Adamax(),
-                  loss='categorical_crossentropy', 
-                  metrics=['acc'])
-    
-    if pre_trained_path:
-        model = models.load_model(pre_trained_path)
-    
-    return model
-
-
-model = create_model()
+# model = create_model()
+print('============ Load model for Training ==============')
+model = create_model(pretrained_weights='./model/unet-v2.h5')
+print('============ Model Loaded for Training ==============')
 
 
 def get_data_path():
@@ -263,11 +180,12 @@ slide_4_list_2 = [[109,58,14,28],[101,69,11,43],[94,74,3,20],[64,140,17,16],[92,
 slide_4_list_3 = [[143,132,124,85],[95,120,81,77],[97,96,110,83],[152,128,149,155],[153,111,57,138],[134,135,114,76],
                   [123,90,121,61],[147,148,119,142],[66,137,63,80],[70,79,115,133],[129,141,127,145]]
 slide_4_test = [[55,55, 0, 0]]
+# slide_4_docker_test = [[102,104,29,44]]
 
 columns = ['is_tissue','slide_path','is_tumor','is_all_tumor','tile_loc']
 
 batch_size = 32
-n_epochs = 30
+n_epochs = 12
 print('======== Start Train ========')
 for slides in slide_4_list_1:
     sample_group_df = pd.DataFrame(
@@ -282,13 +200,13 @@ for slides in slide_4_list_1:
         group_mask_path.append(truth_path)
         
     num_samples = len(sample_group_df)
-    if num_samples > 10000:
-        num_samples = 10000
+    if num_samples > 15000:
+        num_samples = 15000
     
     samples = sample_group_df.sample(num_samples, random_state=42)
     samples.reset_index(drop=True, inplace=True)
     
-    split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+    split = StratifiedShuffleSplit(n_splits=1, test_size=0.15, random_state=42)
     for train_index, test_index in split.split(samples, samples["is_tumor"]):
             train_samples = samples.loc[train_index]
             validation_samples = samples.loc[test_index]
@@ -307,5 +225,95 @@ for slides in slide_4_list_1:
         fh.close()
     file_handles = []
 
-model.save('/data/model/unet.h5')
 print('********************** Train finished **********************')
+
+print('********************** Start Inference *********************')
+file_handles = []
+def test_generator(samples,
+                   slide_path,
+                   batch_size,
+                   patch_size=256,
+                   shuffle=True):
+    
+    slide = openslide.open_slide(slide_path)
+    file_handles.append(slide)
+
+    # tiles
+    tiles = DeepZoomGenerator(slide, tile_size=patch_size, overlap=0, limit_bounds=False)
+
+    num_samples = len(samples)
+    while 1:
+        if shuffle:
+            samples = samples.sample(frac=1)  # shuffling
+
+        for offset in range(0, num_samples, batch_size):
+            batch_samples = samples.iloc[offset:offset+batch_size]
+
+            batch_tiles= []
+            for slide_path, (y, x) in zip(batch_samples['slide_path'].values, 
+                                          batch_samples['tile_loc'].values):
+                img = tiles.get_tile(tiles.level_count-1, (x, y))             
+                
+                if img.size != (patch_size, patch_size):
+                    img = Image.new('RGB', (patch_size, patch_size))
+                    
+                batch_tiles.append(np.array(img))
+                
+            # train_x
+            test_x = np.array(batch_tiles)
+            yield test_x
+
+def get_test_path():
+    slide_paths = {}
+    with open('./test.txt', 'r') as f:
+        for line in f:
+            path = line.rstrip('\n')
+            _, fname = os.path.split(path)
+            fname = fname.split('.')[0]
+            slide_paths[fname] = path
+                
+    return slide_paths
+
+test_paths = get_test_path()
+
+patch_size = 256
+batch_size = 32
+
+# for docker test
+# test_paths = {'Slide158': '/data/test/Slide158.mrxs'}
+
+print('======== Start Inference ========')
+slide_ids, slide_preds = [], []
+for slide_id, slide_path in test_paths.items():
+    samples = find_patches_from_slide(slide_path, 'test')
+    
+    num_samples = len(samples)
+    if num_samples > 5000:
+        num_samples = 5000
+    
+    samples = samples.sample(num_samples, random_state=42)
+    samples.reset_index(drop=True, inplace=True)
+    
+    test_gen = test_generator(samples, slide_path, batch_size)
+    test_steps = np.ceil(len(samples) / batch_size)
+    
+    predicts = model.predict_generator(test_gen,
+                                       steps=test_steps)
+    predict = np.max(predicts[:, :, :, 1])
+    print('{},{}'.format(slide_id, predict))
+    slide_ids.append(slide_id)
+    slide_preds.append(predict)
+    
+    for fh in file_handles:
+        fh.close()
+    file_handles = []
+
+print('======== Finish Inference ========')
+
+
+print('******************** Create output.csv ************************')
+# Create output.csv
+output = pd.DataFrame()
+output['slide_id'] = slide_ids
+output['slide_pred'] = slide_preds
+output.to_csv('/data/output/output.csv', index=False, header=False)
