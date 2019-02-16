@@ -1,3 +1,0 @@
-# HeLP
-
-HeLP Challenge

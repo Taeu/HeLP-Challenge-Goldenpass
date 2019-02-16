@@ -60,7 +60,7 @@ from train import find_patches_from_slide, read_test_data_path, predict_from_mod
 print('****************************INFERENCE FILE*******************************')
 #model = simple_model(pretrained_weights ='/data/model/u_1.h5')
 model = simple_model(pretrained_weights ='/data/model/u_1.h5')
-
+#model = unet(pretrained_weights ='u_1.h5')
 PATCH_SIZE = 256
 NUM_CLASSES = 2 # not_tumor, tumor
 
@@ -155,13 +155,25 @@ def gen_imgs_test(slide_path, truth_path, samples, batch_size, patch_size = PATC
             yield X_train, y_train
 
 
-PATCH_SIZE = 256
-BATCH_SIZE = 32
-test_image_paths = read_test_data_path()
+def read_test_data_path_2():
+    path_dir = '/data/test/'
+    file_list = os.listdir(path_dir)
+    file_list.sort()
+    paths = []
+    for pt in file_list:
+        if 'mrxs' in pt:
+            paths.append(path_dir + pt)
+    return paths
 
-start_x = PATCH_SIZE//4
-start_y = PATCH_SIZE//4
-pred_size = PATCH_SIZE//2
+
+PATCH_SIZE = 256
+BATCH_SIZE = 128
+test_image_paths = read_test_data_path_2()
+print(test_image_paths)
+
+start_x = 64
+start_y = 64
+pred_size = 128
 
 slide_id = list()
 slide_pred = list()
@@ -170,6 +182,9 @@ for id_test in range(len(test_image_paths)):
     image_path = test_image_paths[id_test]
     test_samples = find_patches_from_slide(image_path,'test')
     NUM_SAMPLES = len(test_samples)
+
+    if NUM_SAMPLES > 5000:
+        NUM_SAMPLES = 5000
 
     samples = test_samples.sample(NUM_SAMPLES, random_state=42)
     samples.reset_index(drop=True, inplace=True)
@@ -192,7 +207,7 @@ for id_test in range(len(test_image_paths)):
             preds.append(pred_x_i)
         
     max_pred_x = np.max(preds)
-    
+    print(id_test,"'s max pred : ",max_pred_x)
     slide_id.append(test_image_paths[id_test][11:19])
     slide_pred.append(max_pred_x)
     for fh in file_handles:

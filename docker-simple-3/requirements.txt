@@ -8,3 +8,4 @@ pillow
 tqdm
 scikit-learn
 opencv-python
+psutil

@@ -1,8 +1,0 @@
-openslide-python
-numpy
-pandas
-matplotlib
-scikit-image
-keras
-pillow
-
