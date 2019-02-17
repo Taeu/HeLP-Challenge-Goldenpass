@@ -72,6 +72,7 @@
 /data/train/image/positive/Slide029.mrxs
 /data/train/image/positive/Slide033.mrxs
 /data/train/image/positive/Slide034.mrxs
+/data/train/image/positive/Slide035.mrxs
 /data/train/image/positive/Slide036.mrxs
 /data/train/image/positive/Slide037.mrxs
 /data/train/image/positive/Slide038.mrxs
