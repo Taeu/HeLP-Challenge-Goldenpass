@@ -1,0 +1,11 @@
+openslide-python
+numpy
+pandas
+matplotlib
+scikit-image
+keras
+pillow
+tqdm
+scikit-learn
+opencv-python
+psutil
