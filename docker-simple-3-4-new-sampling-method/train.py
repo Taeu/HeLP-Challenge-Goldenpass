@@ -74,6 +74,7 @@ def gen_imgs(samples, batch_size,patch_size = PATCH_SIZE, shuffle = True):
             masks = []
             for _, batch_sample in batch_samples.iterrows():
                 slide_path = batch_sample.slide_path
+                print(slide_path)
                 slide_contains_tumor = 'pos' in slide_path
                 mask_size_up = np.zeros((patch_size,patch_size))
                 a,b=mask_size_up.shape
@@ -93,7 +94,7 @@ def gen_imgs(samples, batch_size,patch_size = PATCH_SIZE, shuffle = True):
                         img = tiles.get_tile(tiles.level_count-1,(x,y))
 
 
-                        truth_slide_path = '/data/train/mask/positive/' + slide_path[11:19] + '.png'
+                        truth_slide_path = '/data/train/mask/positive/' + slide_path[27:35] + '.png'
                         with openslide.open_slide(truth_slide_path) as truth:
                             truth_tiles = DeepZoomGenerator(truth,tile_size=16, overlap = 0, limit_bounds = False)
                             mask = truth_tiles.get_tile(truth_tiles.level_count-1,batch_sample.tile_loc[::-1])
@@ -107,8 +108,9 @@ def gen_imgs(samples, batch_size,patch_size = PATCH_SIZE, shuffle = True):
                                             mask_size_up[i*16+o,j*16+p] = mask[i][j]
 
                     else:
-                        start_x = 0
-                        start_y = 0
+                        x = 0
+                        y = 0
+                        
                         img = tiles.get_tile(tiles.level_count-1,(x,y))
 
 
@@ -190,7 +192,7 @@ for i in range(len(slide_list_1)):
     image_path = image_paths[slide_list_1[i]]
     mask_path = tumor_mask_paths[slide_list_1[i]]
     samples = find_patches_from_slide(image_path,mask_path)
-    samples = samples.sample(2000,random_state = 42)
+    samples = samples.sample(2000,random_state = 42,replace=True)
     all_samples = all_samples.append(samples)
 
 for i in range(len(slide_list_2)):
@@ -198,9 +200,9 @@ for i in range(len(slide_list_2)):
     mask_path = tumor_mask_paths[slide_list_2[i]]
     samples = find_patches_from_slide(image_path,mask_path)
     tumor_samples = samples[samples.is_tumor == True]
-    tumor_samples = tumor_samples.sample(1000, random_state=42)
+    tumor_samples = tumor_samples.sample(1000, random_state=42,replace=True)
     non_tumor_samples = samples[samples.is_tumor == False]
-    non_tumor_samples = non_tumor_samples.sample(1000, random_state=42)
+    non_tumor_samples = non_tumor_samples.sample(1000, random_state=42,replace=True)
     samples = tumor_samples.append(non_tumor_samples)
     all_samples = all_samples.append(samples)
 
@@ -210,7 +212,7 @@ for i in range(len(slide_list_3)):
     samples = find_patches_from_slide(image_path,mask_path)    
     tumor_samples = samples[samples.is_tumor == True]
     non_tumor_samples = samples[samples.is_tumor == False]
-    non_tumor_samples = non_tumor_samples.sample(1000, random_state=42)
+    non_tumor_samples = non_tumor_samples.sample(1000, random_state=42,replace=True)
     samples = tumor_samples.append(non_tumor_samples)
     all_samples = all_samples.append(samples)
 
@@ -219,6 +221,7 @@ print("-----------samples completed------------")
 print("all_samples # : ", len(all_samples))
 all_samples = all_samples.sample(frac=1)
 all_samples = all_samples.sample(50000, random_state=42)
+all_samples.reset_index(drop=True, inplace=True)
 data_end_time = datetime.now()
 print("samples completed time: %.1f minutes" % ((data_end_time - data_start_time).seconds / 60,))
 

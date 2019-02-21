@@ -82,7 +82,7 @@ def find_patches_from_slide(slide_path, truth_path, patch_size=PATCH_SIZE,filter
             
             
             with openslide.open_slide(truth_path) as truth:
-                print('truth dimensions: ',truth.dimensions)
+                #print('truth dimensions: ',truth.dimensions)
                 z_dimensions=[]
                 z_size = truth.dimensions
                 z_dimensions.append(z_size)
@@ -90,10 +90,10 @@ def find_patches_from_slide(slide_path, truth_path, patch_size=PATCH_SIZE,filter
                     
                     z_size = tuple(max(1, int(math.ceil(z / 2))) for z in z_size)
                     z_dimensions.append(z_size)
-                print('truth_4_dimension_size:',z_dimensions[4]) # level-4
+                #print('truth_4_dimension_size:',z_dimensions[4]) # level-4
             size = z_dimensions[level-4]
             slide4 = slide.read_region(start,level,size)
-            print('slide4_size',slide4.size)
+            #print('slide4_size',slide4.size)
     else :
         with openslide.open_slide(slide_path) as slide:
             start = (0,0)
