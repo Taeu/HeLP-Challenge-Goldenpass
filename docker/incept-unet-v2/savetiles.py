@@ -14,6 +14,16 @@ from preprocessing import create_patches
 
 print('**************** savetiles.py start!! ******************')
 
+print('=============== make directory for tiles =================')
+os.mkdir('/data/model/patches')
+os.mkdir('/data/model/patches/train')
+os.mkdir('/data/model/patches/train/neg')
+os.mkdir('/data/model/patches/train/pos')
+os.mkdir('/data/model/patches/val')
+os.mkdir('/data/model/patches/val/neg')
+os.mkdir('/data/model/patches/val/pos')
+print('============ directory created!! =========================')
+
 slide_paths, mask_paths = get_pos_path()
 
 def save_patches(samples,
@@ -36,8 +46,8 @@ def save_patches(samples,
         
 #     samples = samples.sample(num_samples, random_state=42)  # shuffling
     num_tumor_dict = samples['is_tumor'].value_counts().to_dict()
-    num_false = num_tumor_dict[True]
-    num_true = num_tumor_dict[False]
+    num_false = num_tumor_dict[False]
+    num_true = num_tumor_dict[True]
 
     if num_true > 300:
         num_false, num_true = 300, 300
@@ -58,9 +68,9 @@ def save_patches(samples,
             mask_tile = truth_tiles.get_tile(truth_tiles.level_count-1, (x, y))
             mask_tile = (cv2.cvtColor(np.array(mask_tile), cv2.COLOR_RGB2GRAY) > 0).astype(int)
             if mask_tile[0][0] == 0:
-                img.save('./tiles/train/neg/{}_neg_{}.png'.format(slide_name, idx))
+                img.save('/data/model/patches/train/neg/{}_neg_{}.png'.format(slide_name, idx))
             else:
-                img.save('./tiles/train/pos/{}_pos_{}.png'.format(slide_name, idx))
+                img.save('/data/model/patches/train/pos/{}_pos_{}.png'.format(slide_name, idx))
                 
     for idx, (y, x) in enumerate(val_samples['tile_loc'].values):
         img = tiles.get_tile(tiles.level_count-1, (x+start_x, y+start_y))
@@ -68,15 +78,17 @@ def save_patches(samples,
             mask_tile = truth_tiles.get_tile(truth_tiles.level_count-1, (x, y))
             mask_tile = (cv2.cvtColor(np.array(mask_tile), cv2.COLOR_RGB2GRAY) > 0).astype(int)
             if mask_tile[0][0] == 0:
-                img.save('./tiles/val/neg/{}_neg_{}.png'.format(slide_name, idx))
+                img.save('/data/model/patches/val/neg/{}_neg_{}.png'.format(slide_name, idx))
             else:
-                img.save('./tiles/val/pos/{}_pos_{}.png'.format(slide_name, idx))
+                img.save('/data/model/patches/val/pos/{}_pos_{}.png'.format(slide_name, idx))
 
 
 for slide_path, mask_path, in zip(slide_paths.values(), mask_paths.values()):
     samples = create_patches(slide_path, mask_path)
-    save_patches(samples, slide_path, mask_path)
-    print('{} finished!!'.format(os.path.split(slide_path)))
-
+    try:
+        save_patches(samples, slide_path, mask_path)
+        print('{} finished!!'.format(os.path.split(slide_path)))
+    except:
+        print('{} error!!'.format(os.path.split(slide_path)))
 
 print('****************** savetiles.py finished! ***********************')

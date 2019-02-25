@@ -16,8 +16,8 @@ from preprocessing import create_patches
 from model import create_model
 
 print('**************************** run train.py ***************************************')
-train_dir = './tiles/train/'
-val_dir = './tiels/val/'
+train_dir = '/data/model/patches/train/'
+val_dir = '/data/model/patches/val/'
 
 train_datagen = ImageDataGenerator(
     rescale=1./255,
