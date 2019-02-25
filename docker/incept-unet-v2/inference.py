@@ -23,7 +23,7 @@ from preprocessing import create_patches
 print('********************** run inference.py *********************')
 
 print('============ Pretrained model Load... =============')
-model = create_model(pretrained_weights='./incept-unet.h5')
+model = create_model(pretrained_weights='/data/model/incept-unet.h5')
 # model = create_model(pretrained_weights='/data/model/incept-unet.h5')
 print('============ Model Loaded ==========')
 
