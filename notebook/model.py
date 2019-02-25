@@ -78,12 +78,12 @@ def create_model(patch_size=256, pretrained_weights=False):
     conv9 = layers.Conv2D(16, 3, padding='same', 
                           activation='relu', kernel_initializer='he_normal')(conv9)
 
-    outputs = layers.Conv2D(2, 1, activation='softmax', 
-                           kernel_initializer='he_normal')(conv9)
+    outputs = layers.Conv2D(1, 1, activation='sigmoid', 
+                            kernel_initializer='he_normal')(conv9)
 
     model = models.Model(inputs, outputs)
     model.compile(optimizer=optimizers.Adamax(),
-                  loss='categorical_crossentropy', 
+                  loss='binary_crossentropy', 
                   metrics=['acc'])
     
     if pretrained_weights:

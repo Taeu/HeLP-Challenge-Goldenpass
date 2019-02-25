@@ -93,7 +93,7 @@ for slide_id, slide_path in test_paths.items():
     
     num_samples = len(samples)
     if num_samples > 5000:
-        num_samples = 1
+        num_samples = 5000
     
     samples = samples.sample(num_samples, random_state=42)
     samples.reset_index(drop=True, inplace=True)

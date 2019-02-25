@@ -1,0 +1,9 @@
+python train01.py
+python train02.py
+python train03.py
+python train04.py
+python train05.py
+python train06.py
+python train07.py
+python train08.py
+python train09.py

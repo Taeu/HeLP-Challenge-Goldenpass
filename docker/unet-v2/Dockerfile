@@ -1,4 +1,4 @@
-FROM excelsiorcjh/help-challenge:model
+FROM unet:0.0.1
 
 WORKDIR /
 

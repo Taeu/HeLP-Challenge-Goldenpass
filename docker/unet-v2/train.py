@@ -193,7 +193,7 @@ slide_4_list_1 = [
 columns = ['is_tissue','slide_path','is_tumor','is_all_tumor','tile_loc']
 
 batch_size = 32
-n_epochs = 1
+n_epochs = 5
 print('======== Start Train ========')
 for slides in slide_4_list_1:
     sample_group_df = pd.DataFrame(
@@ -228,7 +228,9 @@ for slides in slide_4_list_1:
                         validation_data=val_gen,
                         validation_steps=np.ceil(len(validation_samples)/batch_size),
                         verbose=2)
-    
+    print('========= Model saving... =======')
+    model.save_weights('/data/model/unet.h5')
+    print('========= Model saved!!!! ========')
     for fh in file_handles:
         fh.close()
     file_handles = []
@@ -237,8 +239,4 @@ for slides in slide_4_list_1:
     del train_gen
     del val_gen
 
-
-print('========= Model saving... =======')
-model.save_weights('/data/model/unet.h5')
-print('========= Model saved!!!! ========')
 print('********************** Train finished **********************')
