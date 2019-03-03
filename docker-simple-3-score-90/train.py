@@ -303,19 +303,22 @@ def read_test_data_path():
 
 image_paths, tumor_mask_paths = read_data_path()
 
-slide_4_list_1 = [[102,104,29,44],[144,55,30,18],[54,65,21,36],[139,82,1,49],[73,108,7,23],[106,103,27,13],[125,56,40,40],
-               [105,151,15,2],[75,100,41,9],[156,113,32,37],[150,88,39,10],[84,122,5,50],[93,118,53,47],[107,117,24,52],[87,78,45,34],[116,98,48,46],
-            [72,131,22,42]]
-slide_4_list_2 = [[101,69,11,43],[94,74,3,20],[64,140,17,16],[71,136,31,4],[59,91,12,6],[92,154,8,26],[99,60,0,33],[86,146,25,19],[68,112,38,51],
-                 [109,58,14,28]]
-slide_4_list_3 = [[143,132,124,85],[95,120,81,77],[97,96,110,83],[152,128,149,155],[153,111,57,138],[134,135,114,76],
-                  [123,90,121,61],[147,148,119,142],[66,137,63,80],[70,79,115,133],[129,141,127,145]]
-slide_4_test = [[55,55,0,0]]
+slide_4_list_1 = [[72,131,22,42]]
 
 columns = ['is_tissue','slide_path','is_tumor','is_all_tumor','tile_loc']
 
 BATCH_SIZE = 128
-N_EPOCHS = 10
+N_EPOCHS = 30
+import keras
+
+callbacks_list = [
+    keras.callbacks.ReduceLROnPlateau(
+        monitor = 'loss',
+        factor = 0.5,
+        patience = 2,
+        min_lr = 0.00005,
+        verbose = 1,
+    )]
 
 for i in range(len(slide_4_list_1)):
     # [1] dataset , 2 pos, 2 neg, mean ratio = 3:1
@@ -357,7 +360,7 @@ for i in range(len(slide_4_list_1)):
     history = model.fit_generator(train_generator, np.ceil(len(train_samples) / BATCH_SIZE),
         validation_data=validation_generator,
         validation_steps=np.ceil(len(validation_samples) / BATCH_SIZE),
-        epochs=N_EPOCHS)
+        epochs=N_EPOCHS, verbose = 2, callbacks = callbacks_list,)
 
     train_end_time = datetime.now()
     print("Model training time: %.1f minutes" % ((train_end_time - train_start_time).seconds / 60,))

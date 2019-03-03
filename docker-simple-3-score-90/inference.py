@@ -203,9 +203,9 @@ for id_test in range(len(test_image_paths)):
                 for y in range(start_y, start_y+pred_size):
                     pred_X[x-start_x][y-start_y] = prediction[x][y]
             pred_s = pd.Series(pred_X.flatten())
-            pre_p = np.sort(pred_s)[10000]
+            
 
-            pred_x_i = pre_p
+            pred_x_i = np.max(pred_s)
             preds.append(pred_x_i)
         
     max_pred_x = np.max(preds)
