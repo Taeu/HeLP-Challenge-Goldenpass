@@ -95,7 +95,7 @@
 
 
 
-## 3. 결과
+## 4. 결과
 
 ```Contest 2-2. Breast cancer classification on frozen pathology``` :  **3위 / 10 팀**
 
@@ -107,7 +107,7 @@
 
 
 
-## 4. 후기
+## 5. 후기
 
 
 
