@@ -1,6 +1,8 @@
 ## 0. 스터디 소개
 
-![GPP](C:\Users\lalat\Pictures\GPP.jpg)
+![GPP](https://user-images.githubusercontent.com/24144491/54084734-c5c98b80-4377-11e9-898e-40f3f97ded55.jpg)
+
+
 
 - 팀명 : GP (GoldenPass: 골든패스)
 - 팀원 : 김대영, 김태우, 서창원, 최종현, 한성일
@@ -19,7 +21,7 @@
 
 
 
-![1552216758231](C:\Users\lalat\AppData\Roaming\Typora\typora-user-images\1552216758231.png)
+![](https://user-images.githubusercontent.com/24144491/54084745-f0b3df80-4377-11e9-939c-68c6c80e9412.JPG)
 
 본 `HeLP Challenge`는 서울아산병원이 주최하는 의료인공지능 개발 콘테스트다. [관련 링크](http://bigdata.amc.seoul.kr/asan/depts/bigdata/K/bbsDetail.do?menuId=4319&contentId=264622&versionNo=2)
 
@@ -94,6 +96,7 @@
 ## 3. 관련 기술 소개
 
 - 도커 
+
   - [관련 설명](https://taeu.github.io/tech/%EB%8F%84%EC%BB%A4-Windows-%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C-Docker-%ED%99%9C%EC%9A%A9/) 
 - 전처리
   - openslide : [openslideTest.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/openslideTest.ipynb), [openslideTest_2.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/openslideTest_2.ipynb)
@@ -104,7 +107,7 @@
   - 관련 설명 : 
     - 전반적인 설명 : [description_whole_pr_0121.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/description_whole_pr_0121.ipynb)
 
-  ![1552216167569](C:\Users\lalat\AppData\Roaming\Typora\typora-user-images\1552216167569.png)
+  ![ni](https://user-images.githubusercontent.com/24144491/54084761-26f15f00-4378-11e9-9c43-151b88dd1cde.png)
 
   - 네트워크
     - simple : [model_simple_1.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/model_simple_1.ipynb)
@@ -120,17 +123,15 @@
 
 ## 3. 결과
 
-```Contest 2-2. Breast cancer classification on frozen pathology```  3위 / 10 팀
+```Contest 2-2. Breast cancer classification on frozen pathology``` :  **3위 / 10 팀**
 
-![1552218804890](C:\Users\lalat\AppData\Roaming\Typora\typora-user-images\1552218804890.png)
-
-
-
-![1552218828793](C:\Users\lalat\AppData\Roaming\Typora\typora-user-images\1552218828793.png)
-
-
+![p1](https://user-images.githubusercontent.com/24144491/54084748-f4476680-4377-11e9-8aeb-1e1ab0e632f7.JPG)
 
  **(Phase 2로 시상)**
+
+![p2](https://user-images.githubusercontent.com/24144491/54084746-f3163980-4377-11e9-8ece-4dc1fbd12b87.JPG)
+
+
 
 
 
