@@ -84,11 +84,8 @@
   - 2019.02.25 ~ 2019.03.03 
 
     - 02.25~27. 학습속도가 너무 느려 image 저장하고 data 저장하는 방식으로 변경, 30시간 학습, 성능 저하..
-
     - learning decay (keras call back 활용) 
-
     - 02.21에 변경한 모델로 60시간 정도 학습하는 걸로 마무리 (20000 samples 20 epochs) ( Phase 1 score 0.86 -> Phase 2 score 0.75)
-
     - 03.03. ensemble 노가다. Phase2 `0.76` 마무리 (3위 / 10 팀)
 
       
