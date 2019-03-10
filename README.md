@@ -100,11 +100,11 @@
   - [관련 설명](https://taeu.github.io/tech/%EB%8F%84%EC%BB%A4-Windows-%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C-Docker-%ED%99%9C%EC%9A%A9/) 
 - 전처리
   - openslide : [openslideTest.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/openslideTest.ipynb), [openslideTest_2.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/openslideTest_2.ipynb)
-  - 전처리 :  
+  - 전처리 :  [관련 설명](https://taeu.github.io/healthcare/deeplearning-healthcare-breastcancer-implementation/)
 
 - 학습
 
-  - 관련 설명 : 
+  - 관련 설명 : [관련 설명](https://taeu.github.io/healthcare/deeplearning-healthcare-breastcancer-implementation/)
     - 전반적인 설명 : [description_whole_pr_0121.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/description_whole_pr_0121.ipynb)
 
   ![ni](https://user-images.githubusercontent.com/24144491/54084761-26f15f00-4378-11e9-9c43-151b88dd1cde.png)
