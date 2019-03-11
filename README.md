@@ -74,6 +74,7 @@
 - 도커 : [관련 설명](https://taeu.github.io/tech/%EB%8F%84%EC%BB%A4-Windows-%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C-Docker-%ED%99%9C%EC%9A%A9/) 
 - 전처리
   - openslide : [openslideTest.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/openslideTest.ipynb), [openslideTest_2.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/openslideTest_2.ipynb)
+  - openslide windows 설치관련 : windows는 `pip install openslide-python`으로 openslide 패키지가 다 깔리지 않는다. 실행시키기 위해서는 `Windows Binaries`를 별도로 받아서 설치해야하는데 [다음링크](https://openslide.org/download/)의 `windows Binaries`를 다운받고 압축푼다음 `bin`안의 `libopenslide-0.dll`같은 파일들을 설정해둔 환경변수 경로에다가 복붙하거나, `bin`파일경로를 환경변수에 추가하면 된다. 
   - 전처리 :  [관련 설명](https://taeu.github.io/healthcare/deeplearning-healthcare-breastcancer-implementation/)
 
 - 학습
