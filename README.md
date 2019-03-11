@@ -20,7 +20,6 @@
 본 `HeLP Challenge`는 서울아산병원이 주최하는 의료인공지능 개발 콘테스트다. [관련 링크](http://bigdata.amc.seoul.kr/asan/depts/bigdata/K/bbsDetail.do?menuId=4319&contentId=264622&versionNo=2)
 
 - 대회 목적 : 인공지능 개발자들이 서울 아산병원의 의료데이터에 접근하여 연구할 수 있는 플랫폼을 제공함으로써 세계적인 의료인공지능기술 개발에 기여하고자 함.
-
 - 참가자격 : 의료인공지능기술개발에 관심이 있는 개인, 대학, 스타트업, 연구기관, 기업
 - 콘테스트 내용 
   - 1-1 뇌종양 MRI에서 뇌종양 영역 분할
@@ -28,7 +27,7 @@
   - 2-1 뇌경색발생과 MRI 촬영 사이의 시간 추정
   - **2-2 병리조직 슬라이드에서 breast cancer metastasis 여부 판정**
 - 우리 팀이 참가한 주제는 `2-2 병리조직 슬라이드에서 breast cancer metastasis 여부 판정`이다.
-- `Contest 2-2. Breast cancer classification on frozen pathology` 주제와 관련된 [description wiki](Contest 2-2. Breast cancer classification on frozen pathology) 
+- `Contest 2-2. Breast cancer classification on frozen pathology` 주제와 관련된 [description wiki](https://www.synapse.org/#!Synapse:syn15569329/wiki/582435)
 - 기간 : 2019.01.21.월 ~ 2019.03.03.월  6주간 진행
 
 
@@ -36,7 +35,6 @@
 ## 2. 진행 과정
 
 - 사전조사 : [breast_cancer_challenges_tu.xlsx](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/breast_cancer_challenges_tu.xlsx)의 `S` sheet 참고
-
 - 진행과정 : [breast_cancer_challenges_tu.xlsx](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/breast_cancer_challenges_tu.xlsx)의 `Sc` sheet 참고
 
   - 2018.12.31 ~ 2019.01.06 (1주차) : 사전조사 완료
@@ -73,15 +71,14 @@
 
 ## 3. 관련 기술 소개
 
-- 도커 
-  - [관련 설명](https://taeu.github.io/tech/%EB%8F%84%EC%BB%A4-Windows-%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C-Docker-%ED%99%9C%EC%9A%A9/) 
+- 도커 : [관련 설명](https://taeu.github.io/tech/%EB%8F%84%EC%BB%A4-Windows-%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C-Docker-%ED%99%9C%EC%9A%A9/) 
 - 전처리
   - openslide : [openslideTest.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/openslideTest.ipynb), [openslideTest_2.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/openslideTest_2.ipynb)
   - 전처리 :  [관련 설명](https://taeu.github.io/healthcare/deeplearning-healthcare-breastcancer-implementation/)
 
 - 학습
   - 관련 설명 : [관련 설명](https://taeu.github.io/healthcare/deeplearning-healthcare-breastcancer-implementation/)
-    - 전반적인 설명 : [description_whole_pr_0121.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/description_whole_pr_0121.ipynb)
+    - 전반적인 프로세스 관련 코드 : [description_whole_pr_0121.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/description_whole_pr_0121.ipynb)
   ![ni](https://user-images.githubusercontent.com/24144491/54084761-26f15f00-4378-11e9-9c43-151b88dd1cde.png)
   - 네트워크
     - simple : [model_simple_1.ipynb](https://github.com/Taeu/HeLP-Challenge-Goldenpass/blob/master/model_simple_1.ipynb)
@@ -109,8 +106,7 @@
 
 ## 5. 후기
 
-
-
+김태우 : [참가 후기 글](https://taeu.github.io/daily/daily-HeLP-Challenge-Review/)
 
 
 
